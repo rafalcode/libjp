@@ -18,13 +18,17 @@
 #include "jpeglib.h"
 #include "jpegcomp.h"
 
-typedef enum {
+static const char *progname;	/* program name for error messages */
+
+typedef enum /* JCROP_CODE */
+{
 	JCROP_UNSET,
 	JCROP_POS,
 	JCROP_NEG
 } JCROP_CODE;
 
-typedef enum {
+typedef enum /* JXFORM_CODE */
+{
 	JXFORM_NONE,		/* no transformation */
 	JXFORM_FLIP_H,		/* horizontal flip */
 	JXFORM_FLIP_V,		/* vertical flip */
@@ -35,7 +39,7 @@ typedef enum {
 	JXFORM_ROT_270		/* 270-degree clockwise (or 90 ccw) */
 } JXFORM_CODE;
 
-typedef struct
+typedef struct /* jpeg_transform_info */
 {
   JXFORM_CODE transform;	/* image transform operator */
   boolean perfect;		/* if TRUE, fail if partial MCUs are requested */
@@ -73,22 +77,18 @@ typedef struct
   int iMCU_sample_height;
 } jpeg_transform_info;
 
-static const char *progname;	/* program name for error messages */
-
-GLOBAL(jvirt_barray_ptr *) jtransform_adjust_parameters (j_decompress_ptr srcinfo, j_compress_ptr dstinfo, jvirt_barray_ptr *src_coef_arrays, jpeg_transform_info *info)
+GLOBAL(jvirt_barray_ptr *) jtransform_adjust_parameters(j_decompress_ptr srcinfo, j_compress_ptr dstinfo, jvirt_barray_ptr *src_coef_arrays, jpeg_transform_info *info)
 {
     if (info->num_components == 1) {
         /* For a single-component source, we force the destination sampling factors
          * to 1x1, with or without force_grayscale.  This is useful because some
-         * decoders choke on grayscale images with other sampling factors.
-         */
+         * decoders choke on grayscale images with other sampling factors. */
         dstinfo->comp_info[0].h_samp_factor = 1;
         dstinfo->comp_info[0].v_samp_factor = 1;
     }
 
     /* Correct the destination's image dimensions as necessary
-     * for rotate/flip, resize, and crop operations.
-     */
+     * for rotate/flip, resize, and crop operations. */
     dstinfo->image_width = info->output_width;
     dstinfo->image_height = info->output_height;
 
@@ -364,7 +364,7 @@ LOCAL(void) init_switches (j_compress_ptr cinfo, jpeg_transform_info *transformo
 
 int main (int argc, char **argv)
 {
-    /*declarations*/
+    /* declarations of info and error structs */
     struct jpeg_decompress_struct srcinfo;
     struct jpeg_compress_struct dstinfo;
     struct jpeg_error_mgr jsrcerr, jdsterr;
@@ -378,14 +378,14 @@ int main (int argc, char **argv)
 
     FILE *fp;
     int k;
-    char *outfilename=calloc(32, sizeof(char));
+    char *outfilename=calloc(128, sizeof(char));
 
     progname = argv[0];
 
-    /* we start by checking out the source file in its various aspects */
+    /* still no input file .. but preparing the info & error structs */
+    /* Initialize the JPEG compression object with default error handling. */
     srcinfo.err = jpeg_std_error(&jsrcerr);
     jpeg_create_decompress(&srcinfo);
-    /* Initialize the JPEG compression object with default error handling. */
 
     /* Open the input file. */
     CHKNARGS(argc, 1);
@@ -399,7 +399,7 @@ int main (int argc, char **argv)
     (void) jpeg_read_header(&srcinfo, TRUE);
     printessens(srcinfo); /* have a look */
     src_coef_arrays = jpeg_read_coefficients(&srcinfo);
-    fclose(fp); /* I risk an early clouse of the src fileptr */
+    fclose(fp); /* I risk an early close of the src fileptr */
 
     int vs[2]={170, 860};
     int hs[2]={230, 640};

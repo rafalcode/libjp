@@ -17,7 +17,7 @@ typedef struct
     char fn[24];
 } pos;
 
-void givemeasp(char *aspname, int *cwid, int *chei)
+void givemeasp(char *aspname, int *cwid, int *chei) /* give me aspect */
 {
     int i=0;
 
