@@ -7,7 +7,9 @@ CFLAGS=-g -Wall
 SPECLIBS=-ljpeg -lm
 # SLIBS2=-L/usr/lib64 -lMagickCore
 SLIBS2=-lMagickCore
-EXECUTABLES=jvba example jpegcrop jcro1 jcro2 ask2 jcro3 ask2a jcro3a jcro4 jcro4a magcore1
+EXECUTABLES=jvba example jpegcrop jcro1 jcro2 ask2 jcro3 ask2a jcro3a jcro4 jcro4a magcore1 magcore2 rescro1 rescro2 rescro3 rescro2a
+ARCHINCS=-I/usr/include/ImageMagick-7 -fopenmp -DMAGICKCORE_HDRI_ENABLE=1 -DMAGICKCORE_QUANTUM_DEPTH=16
+ARCHLIBS=-lMagickCore-7.Q16HDRI
 
 # jvba: smallest file, just reports isizeo f a barray pointer which, on a amd64 system, was always going to be 8.
 jvba: jvba.c
@@ -15,10 +17,22 @@ jvba: jvba.c
 
 # using not libjpeg, but libmagickcore
 magcore1: magcore1.c
-	${CC} ${CFLAGS} -o $@ $^ ${SLIBS2}
+	# ${CC} ${CFLAGS} -o $@ $^ ${SLIBS2}
+	${CC} ${ARCHINCS} -o $@ $^ ${ARCHLIBS}
 
 magcore2: magcore2.c
-	${CC} ${CFLAGS} -o $@ $^ ${SLIBS2}
+	# ${CC} ${CFLAGS} -o $@ $^ ${SLIBS2}
+	${CC} ${ARCHINCS} -o $@ $^ ${ARCHLIBS}
+
+rescro1: rescro1.c
+	${CC} ${ARCHINCS} -o $@ $^ ${ARCHLIBS}
+# following seems to do an nplace resize and ignores the ImageInfo!
+rescro2: rescro2.c
+	${CC} ${ARCHINCS} -o $@ $^ ${ARCHLIBS}
+rescro2a: rescro2a.c
+	${CC} ${ARCHINCS} -o $@ $^ ${ARCHLIBS}
+rescro3: rescro3.c
+	${CC} ${ARCHINCS} -o $@ $^ ${ARCHLIBS}
 
 # unsure what this is about.
 rdswitch.o: rdswitch.c
