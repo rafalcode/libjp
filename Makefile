@@ -7,9 +7,16 @@ CFLAGS=-g -Wall
 SPECLIBS=-ljpeg -lm
 # SLIBS2=-L/usr/lib64 -lMagickCore
 SLIBS2=-lMagickCore
-EXECUTABLES=jvba example jpegcrop jcro1 jcro2 ask2 jcro3 ask2a jcro3a jcro4 jcro4a magcore1 magcore2 rescro1 rescro2 rescro3 rescro2a
+EXECUTABLES=jvba example jpegcrop jcro1 jcro2 ask2 jcro3 ask2a jcro3a jcro4 jcro4a magcore1 magcore2 rescro1 rescro2 rescro3 rescro2a rescro3a vgim0 bl0 gm0 gm1
 ARCHINCS=-I/usr/include/ImageMagick-7 -fopenmp -DMAGICKCORE_HDRI_ENABLE=1 -DMAGICKCORE_QUANTUM_DEPTH=16
 ARCHLIBS=-lMagickCore-7.Q16HDRI
+# particularly for wand on Archlinux:
+ARCHINCSW=-I/usr/include/ImageMagick-7 -fopenmp -DMAGICKCORE_HDRI_ENABLE=1 -DMAGICKCORE_QUANTUM_DEPTH=16 # particularly for wand on Archlinux
+ARCHLIBSW=-lMagickWand-7.Q16HDRI -lMagickCore-7.Q16HDRI
+# particularly for GraphicsMagick on Archlinux:
+# GraphicsMagick-config --cppflags --ldflags --libs
+ARCHINCSG=-I/usr/include/GraphicsMagick
+ARCHLIBSG=-L/usr/lib -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now -lGraphicsMagick -llcms2 -lfreetype -lXext -lSM -lICE -lX11 -llzma -lbz2 -lz -lltdl -lm -lpthread -lgomp
 
 # jvba: smallest file, just reports isizeo f a barray pointer which, on a amd64 system, was always going to be 8.
 jvba: jvba.c
@@ -33,6 +40,20 @@ rescro2a: rescro2a.c
 	${CC} ${ARCHINCS} -o $@ $^ ${ARCHLIBS}
 rescro3: rescro3.c
 	${CC} ${ARCHINCS} -o $@ $^ ${ARCHLIBS}
+rescro3a: rescro3a.c
+	${CC} ${ARCHINCS} -o $@ $^ ${ARCHLIBS}
+vgim0: vgim0.c
+	${CC} ${ARCHINCS} -o $@ $^ ${ARCHLIBS}
+bl0: bl0.c
+	${CC} ${ARCHINCS} -o $@ $^ ${ARCHLIBS}
+
+# I had trouble with supposed memory leaks in IM so I move over to the GraphicsMagick fork
+gm0: gm0.c
+	${CC} ${ARCHINCSG} -o $@ $^ ${ARCHLIBSG}
+# This prog does nothing. It just initialises the GM API environemnt and then destroys it.
+# still reachable: 19,324 bytes in 19 blocks
+gm1: gm1.c
+	${CC} ${ARCHINCSG} -o $@ $^ ${ARCHLIBSG}
 
 # unsure what this is about.
 rdswitch.o: rdswitch.c
