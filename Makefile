@@ -7,7 +7,7 @@ CFLAGS=-g -Wall
 SPECLIBS=-ljpeg -lm
 # SLIBS2=-L/usr/lib64 -lMagickCore
 SLIBS2=-lMagickCore
-EXECUTABLES=jvba example jpegcrop jcro1 jcro2 ask2 jcro3 ask2a jcro3a jcro4 jcro4a magcore1 magcore2 rescro1 rescro2 rescro3 rescro2a rescro3a vgim0 bl0 gm0 gm1
+EXECUTABLES=jvba example jpegcrop jcro1 jcro2 ask2 jcro3 ask2a jcro3a jcro4 jcro4a magcore1 magcore2 rescro1 rescro2 rescro3 rescro2a rescro3a vgim0 bl0 gm0 gm1 v0 v1 v3 vcr0 v2a
 ARCHINCS=-I/usr/include/ImageMagick-7 -fopenmp -DMAGICKCORE_HDRI_ENABLE=1 -DMAGICKCORE_QUANTUM_DEPTH=16
 ARCHLIBS=-lMagickCore-7.Q16HDRI
 # particularly for wand on Archlinux:
@@ -17,6 +17,9 @@ ARCHLIBSW=-lMagickWand-7.Q16HDRI -lMagickCore-7.Q16HDRI
 # GraphicsMagick-config --cppflags --ldflags --libs
 ARCHINCSG=-I/usr/include/GraphicsMagick
 ARCHLIBSG=-L/usr/lib -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now -lGraphicsMagick -llcms2 -lfreetype -lXext -lSM -lICE -lX11 -llzma -lbz2 -lz -lltdl -lm -lpthread -lgomp
+# for libvips:
+ARCHINCSV=-I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/libgsf-1 -I/usr/include/libxml2 -I/usr/include/ImageMagick-7 -fopenmp -DMAGICKCORE_HDRI_ENABLE=1 -DMAGICKCORE_QUANTUM_DEPTH=16 -I/usr/include/orc-0.4 -I/usr/include/OpenEXR -I/usr/include/Imath -I/usr/include/openjpeg-2.4 -I/usr/include/poppler/glib -I/usr/include/cairo -I/usr/include/lzo -I/usr/include/libpng16 -I/usr/include/freetype2 -I/usr/include/harfbuzz -I/usr/include/pixman-1 -I/usr/include/poppler -I/usr/include/librsvg-2.0 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/fribidi -pthread
+ARCHLIBSV=-lvips -lgobject-2.0 -lglib-2.0
 
 # jvba: smallest file, just reports isizeo f a barray pointer which, on a amd64 system, was always going to be 8.
 jvba: jvba.c
@@ -54,6 +57,20 @@ gm0: gm0.c
 # still reachable: 19,324 bytes in 19 blocks
 gm1: gm1.c
 	${CC} ${ARCHINCSG} -o $@ $^ ${ARCHLIBSG}
+
+# using libvips.
+v0: v0.c
+	${CC} ${ARCHINCSV} -o $@ $^ ${ARCHLIBSV}
+v1: v1.c
+	${CC} ${ARCHINCSV} -o $@ $^ ${ARCHLIBSV}
+v2: v2.c
+	${CC} ${ARCHINCSV} -o $@ $^ ${ARCHLIBSV}
+v2a: v2a.c
+	${CC} ${ARCHINCSV} -o $@ $^ ${ARCHLIBSV}
+v3: v3.c
+	${CC} ${ARCHINCSV} -o $@ $^ ${ARCHLIBSV}
+vcr0: vcr0.c
+	${CC} ${ARCHINCSV} -o $@ $^ ${ARCHLIBSV}
 
 # unsure what this is about.
 rdswitch.o: rdswitch.c
