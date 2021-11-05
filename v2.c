@@ -25,14 +25,14 @@ int main( int argc, char **argv )
     printf( "mean pixel value = %g\n", mean ); 
 
     // if( vips_invert( in, &out, NULL ) )
-    if( vips_resize(in, &out, 1.85) )
+    if( vips_resize(in, &out, 1.85, NULL) )
         vips_error_exit( NULL );
 
-    g_object_unref( in ); 
 
     if( vips_image_write_to_file( out, argv[2], NULL ) )
         vips_error_exit( NULL );
 
+    g_object_unref( in ); 
     g_object_unref( out ); 
 
     return( 0 );
