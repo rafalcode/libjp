@@ -67,7 +67,7 @@ v2: v2.c
 	${CC} ${CFLAGS} ${ARCHINCSV} -o $@ $^ ${ARCHLIBSV}
 vcropt: vcropt.c
 	${CC} ${CFLAGS} ${ARCHINCSV} -o $@ $^ ${ARCHLIBSV}
-vcropt: vcropt.c
+vcrsz: vcrsz.c
 	${CC} ${CFLAGS} ${ARCHINCSV} -o $@ $^ ${ARCHLIBSV}
 v2b: v2b.c
 	${CC} ${CFLAGS} ${ARCHINCSV} -o $@ $^ ${ARCHLIBSV}

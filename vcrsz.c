@@ -6,12 +6,12 @@
 
 int main( int argc, char **argv )
 {
-    VipsImage *in, out0, out2;
+    VipsImage *in, *out0, *out2;
 
     if( VIPS_INIT( argv[0] ) )
         vips_error_exit( NULL ); 
 
-    if( argc != 6 ) {
+    if( argc != 5 ) {
         printf("4 args: xpt is point of interest, x direction. ypt is same for y dir\n"); 
         vips_error_exit( "usage: %s infile xpt ypt outfile1 outfile2", argv[0] ); 
     }
@@ -27,7 +27,8 @@ int main( int argc, char **argv )
     float xfac=(float)XSZ/iw;
     float yfac=(float)YSZ/ih;
     float ofac=(yfac>xfac)?yfac:xfac;
-    if( vips_resize(in, &out2, ofac, NULL) ) {
+    ofac+=.3;
+    if( vips_resize(in, &out0, ofac, NULL) ) {
         printf("Resize failed.\n");
         vips_error_exit(NULL);
     }
@@ -37,14 +38,14 @@ int main( int argc, char **argv )
     int xpt2i=(int)(.5+xpt2);
     int ypt2i=(int)(.5+ypt2);
     printf("integerised xpt2=%i ypt2=%i\n", xpt2i, ypt2i);
-    if( vips_crop(out0, &out2, sx, sy, XSZ, YSZ, NULL) )
+    if( vips_crop(out0, &out2, xpt2i-XSZ/2, ypt2i-YSZ/2, XSZ, YSZ, NULL) )
         vips_error_exit( NULL );
 
     if( vips_image_write_to_file( out2, argv[4], NULL ) )
         vips_error_exit( NULL );
 
     g_object_unref( in ); 
-    g_object_unref( out ); 
+    g_object_unref( out0 ); 
     g_object_unref( out2 ); 
 
     return( 0 );
