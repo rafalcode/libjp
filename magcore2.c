@@ -8,7 +8,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include <magick/MagickCore.h>
+// #include <magick/MagickCore.h>
+// for Arch
+#include <MagickCore/MagickCore.h>
 
 int main(int argc,char **argv)
 {
@@ -18,8 +20,8 @@ int main(int argc,char **argv)
 
     ImageInfo *image_info;
 
-    if (argc != 3) {
-        (void) fprintf(stdout,"Usage: %s image thumbnail\n",argv[0]);
+    if (argc != 2) {
+        (void) fprintf(stdout,"Usage: 1 arg : %s imagefile\n", argv[0]);
         exit(EXIT_FAILURE);
     }
     /* Initialize the image info structure and read an image.  */
@@ -153,15 +155,17 @@ int main(int argc,char **argv)
     exception=AcquireExceptionInfo();
     image_info=CloneImageInfo((ImageInfo *) NULL);
 
-    (void) strcpy(image_info->filename,argv[1]);
-    images=ReadImage(image_info,exception);
-  printf("1: %s\n", image_info->size);
+    strcpy(image_info->filename,argv[1]);
+    image=ReadImage(image_info,exception);
+    printf("1: %s\n", image_info->size);
+    printf("2: %zu\n", image->columns);
+    printf("3: %zu\n", image->rows);
     if (exception->severity != UndefinedException)
         CatchException(exception);
     if (images == (Image *) NULL)
         exit(EXIT_FAILURE);
 
-    /* Convert the image to a thumbnail.  */
+    /* Convert the image to a thumbnail. 
     thumbnails=NewImageList();
     while ((image=RemoveFirstImageFromList(&images)) != (Image *) NULL) {
 
@@ -174,13 +178,12 @@ int main(int argc,char **argv)
 
         DestroyImage(image);
     }
-    /* Write the image thumbnail.  */
     strcpy(thumbnails->filename,argv[2]);
     WriteImage(image_info,thumbnails);
-    /*
        Destroy the image thumbnail and exit.
-       */
     thumbnails=DestroyImageList(thumbnails);
+    */
+    DestroyImage(image);
     image_info=DestroyImageInfo(image_info);
     exception=DestroyExceptionInfo(exception);
     MagickCoreTerminus();

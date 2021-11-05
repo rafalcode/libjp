@@ -3,12 +3,15 @@
  *
  *  compilte with 
  *  cc -o core `pkg-config --cflags --libs MagickCore` core.c
+ *  NOTE: MAgickCore-config now exists for this
  */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include <magick/MagickCore.h>
+// #include <magick/MagickCore.h>
+// for Arch
+#include <MagickCore/MagickCore.h>
 
 int main(int argc,char **argv)
 {
@@ -38,8 +41,8 @@ int main(int argc,char **argv)
     thumbnails=NewImageList();
     while ((image=RemoveFirstImageFromList(&images)) != (Image *) NULL) {
 
-        resize_image=ResizeImage(image, 106, 80, LanczosFilter, 1.0, exception);
-
+        // resize_image=ResizeImage(image, 106, 80, LanczosFilter, 1.0, exception);
+        resize_image=ResizeImage(image, 106, 80, LanczosFilter, exception);
         if (resize_image == (Image *) NULL)
             MagickError(exception->severity,exception->reason,exception->description);
 
@@ -49,7 +52,7 @@ int main(int argc,char **argv)
     }
     /* Write the image thumbnail.  */
     strcpy(thumbnails->filename,argv[2]);
-    WriteImage(image_info,thumbnails);
+    WriteImage(image_info,thumbnails, exception);
     /*
        Destroy the image thumbnail and exit.
        */
