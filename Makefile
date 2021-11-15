@@ -21,16 +21,16 @@ ARCHLIBSG=-L/usr/lib -Wl,-O1,--sort-common,--as-needed,-z,relro,-z,now -lGraphic
 ARCHINCSV=-I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/libgsf-1 -I/usr/include/libxml2 -I/usr/include/ImageMagick-7 -fopenmp -DMAGICKCORE_HDRI_ENABLE=1 -DMAGICKCORE_QUANTUM_DEPTH=16 -I/usr/include/orc-0.4 -I/usr/include/OpenEXR -I/usr/include/Imath -I/usr/include/openjpeg-2.4 -I/usr/include/poppler/glib -I/usr/include/cairo -I/usr/include/lzo -I/usr/include/libpng16 -I/usr/include/freetype2 -I/usr/include/harfbuzz -I/usr/include/pixman-1 -I/usr/include/poppler -I/usr/include/librsvg-2.0 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/pango-1.0 -I/usr/include/fribidi -pthread
 ARCHLIBSV=-lvips -lgobject-2.0 -lglib-2.0
 
+magcore2: magcore2.c
+	# ${CC} ${CFLAGS} -o $@ $^ ${SLIBS2}
+	${CC} ${ARCHINCS} -o $@ $^ ${ARCHLIBS}
+
 # jvba: smallest file, just reports isizeo f a barray pointer which, on a amd64 system, was always going to be 8.
 jvba: jvba.c
 	${CC} ${CFLAGS} -o $@ $^ ${SPECLIBS}
 
 # using not libjpeg, but libmagickcore
 magcore1: magcore1.c
-	# ${CC} ${CFLAGS} -o $@ $^ ${SLIBS2}
-	${CC} ${ARCHINCS} -o $@ $^ ${ARCHLIBS}
-
-magcore2: magcore2.c
 	# ${CC} ${CFLAGS} -o $@ $^ ${SLIBS2}
 	${CC} ${ARCHINCS} -o $@ $^ ${ARCHLIBS}
 
@@ -73,6 +73,7 @@ v2b: v2b.c
 	${CC} ${CFLAGS} ${ARCHINCSV} -o $@ $^ ${ARCHLIBSV}
 v2c: v2c.c
 	${CC} ${CFLAGS} ${ARCHINCSV} -o $@ $^ ${ARCHLIBSV}
+	./$@
 v3: v3.c
 	${CC} ${CFLAGS} ${ARCHINCSV} -o $@ $^ ${ARCHLIBSV}
 vcr0: vcr0.c

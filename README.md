@@ -8,3 +8,6 @@ but it seems hard to avoid them.
 
 Different resize filters:
 QuadraticFilter CubicFilter LanczosFilter
+
+You'd expect libvips to be different,
+but even it itslef is throwing mem errors with the hello world program.

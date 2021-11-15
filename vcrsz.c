@@ -34,11 +34,16 @@ int main( int argc, char **argv )
     }
     float xpt2=(float)xpt*ofac;
     float ypt2=(float)ypt*ofac;
-    printf("xpt2=%4.6f ypt2=%4.6f\n", xpt2, ypt2);
+    int iw2 = vips_image_get_width(out0); 
+    int ih2= vips_image_get_height(out0); 
+    printf("In resized image, ptofint is float: xpt2=%4.6f ypt2=%4.6f\n", xpt2, ypt2);
     int xpt2i=(int)(.5+xpt2);
     int ypt2i=(int)(.5+ypt2);
-    printf("integerised xpt2=%i ypt2=%i\n", xpt2i, ypt2i);
-    if( vips_crop(out0, &out2, xpt2i-XSZ/2, ypt2i-YSZ/2, XSZ, YSZ, NULL) )
+    printf("integerised in resized uncropped image %i & %i\n", xpt2i, ypt2i);
+    int sxi=xpt2i-XSZ/2;
+    int syi=ypt2i-YSZ/2;
+    printf("For viewport we would offset at sxi=%i syi=%i\n", sxi, syi);
+    if( vips_crop(out0, &out2, sxi, syi, XSZ, YSZ, NULL) )
         vips_error_exit( NULL );
 
     if( vips_image_write_to_file( out2, argv[4], NULL ) )

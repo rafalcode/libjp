@@ -43,7 +43,9 @@ int main(int argc,char **argv)
     if (outim == (Image *) NULL)
         MagickError(exception->severity,exception->reason,exception->description);
 
-    strcpy(outim->filename, argv[2]);
+    char tc[128]={0};
+    sprintf(tc, "uit/%s", argv[2]);
+    strcpy(outim->filename, tc);
     WriteImage(iminf, outim, exception);
     free(rinf);
     DestroyImage(inim);
